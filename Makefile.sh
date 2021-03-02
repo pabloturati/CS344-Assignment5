@@ -1,25 +1,43 @@
 #! /bin/bash
 
 # Build data
+
+# Programs
+keygen="keygen"
+enc_server="enc_server"
+enc_client="enc_client"
+
 preCompilePackage="component_archive"
-# executableFilename="line_processor"
-# mainFilename="main.c"
-testFiles="
+
+executableFilenames="
+  keygen 
+  enc_server 
+  dec_server 
+  enc_client 
+  dec_client
+  "
+outputFiles="
   mykey
   "
 
 # Components
-# declare -a componentList=(
-#   "constants"
-#   "dataProcessingMethods"
-#   "bufferHandlers"
-#   "threadHandlerMethods"
+declare -a componentList=(
+  "constants"
+  "sharedMethods"
+  "encryptionMethods"
+)
+
+port=57171
+
+# declare programList=(
+#   "keygen"
+#   "enc_server"
 # )
 
 # Cleans previously compiled files and created folders
 function preCompileClean() {
   # Fix remove
-  rm -rf $executableFilename *.o *.a $testFiles
+  rm -rf $executableFilenames *.o *.a $outputFiles
 }
 
 # Cleans space of temporary compile files
@@ -27,23 +45,23 @@ function postCompileClean() {
   rm -f *.o *.a
 }
 
-# function generatePrecompiledObject() {
-#   gcc --std=gnu99 -c ${1}/${1}.c
-# }
+function generatePrecompiledObject() {
+  gcc --std=gnu99 -c ${1}/${1}.c
+}
 
-# function generateModuleObjectsAndArchive() {
-#   # Stores object list
-#   precompileObjectList=""
+function generateModuleObjectsAndArchive() {
+  # Stores object list
+  precompileObjectList=""
 
-#   # Create precompiled objects and list
-#   for component in ${componentList[@]}; do
-#     precompileObjectList+=" ${component}.o"
-#     generatePrecompiledObject $component
-#   done
+  # Create precompiled objects and list
+  for component in ${componentList[@]}; do
+    precompileObjectList+=" ${component}.o"
+    generatePrecompiledObject $component
+  done
 
-#   # Creates archive with objects
-#   ar -r ${preCompilePackage}.a $precompileObjectList 2>/dev/null
-# }
+  # Creates archive with objects
+  ar -r ${preCompilePackage}.a $precompileObjectList 2>/dev/null
+}
 
 # Compiles main
 # function compileMainAndArchive() {
@@ -52,14 +70,32 @@ function postCompileClean() {
 
 function main() {
   # Pre cleaning, removes leftovers from previous runs
-  # preCompileClean
+  preCompileClean
 
   # Compilation step
-  # generateModuleObjectsAndArchive
+  generateModuleObjectsAndArchive
   # compileMainAndArchive
+  # Compile Keygen
+  gcc --std=gnu99 -o $keygen ${keygen}.c ${preCompilePackage}.a
+  # Compule enc_server
+  gcc --std=gnu99 -o $enc_server ${enc_server}.c ${preCompilePackage}.a
+  # Compule enc_client
+  gcc --std=gnu99 -o $enc_client ${enc_client}.c ${preCompilePackage}.a
 
   # Post cleaning to eliminate temporary files
-  # postCompileClean
+  postCompileClean
+
+  # Run enc_server in background
+  ./enc_server $port &
+
+  # Create a key of a certain size
+  ./keygen 36 >mykey
+
+  # Run
+  # enc_client plaintext1 testFiles/myshortkey 57171 > ciphertext1
+  # enc_client plaintext1 testFiles/myshortkey 57171 >ciphertext1
+
+  ./enc_client sourceFiles/plaintext1 mykey $port
 
   # Handles parameters to execute.
   # Param triggers:
@@ -76,20 +112,6 @@ function main() {
   #   esac
   #   shift
   # done
-
-  # Compile Keygen
-  # gcc --std=gnu99 -c sharedMethods sharedMethods/sharedMethods.c
-  # gcc --std=gnu99 -c constants constants/constants.c
-
-  # rm -rf ${preCompilePackage}.a
-  gcc --std=gnu99 -c constants/constants.c
-  gcc --std=gnu99 -c sharedMethods/sharedMethods.c
-  ar -r ${preCompilePackage}.a constants.o sharedMethods.o 2>/dev/null
-
-  gcc --std=gnu99 -o keygen keygen.c ${preCompilePackage}.a
-  postCompileClean
-  # ./keygen 1544
-  ./keygen 256 >mykey
 }
 
 # Execute this script passing params to main

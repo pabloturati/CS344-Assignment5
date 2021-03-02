@@ -68,6 +68,10 @@ README.pdf
 
 # Process file outputs
 keygen
+enc_server
+dec_server
+enc_client
+dec_client
 
 # Testoutput files
 mykey

@@ -3,6 +3,7 @@
 #include <time.h>
 #include "constants/constants.h"
 #include "sharedMethods/sharedMethods.h"
+#include "encryptionMethods/encryptionMethods.h"
 
 int main(int argc, const char *argv[])
 {
