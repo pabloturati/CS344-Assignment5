@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
   if (plainTextSize != keyTextSize)
   {
-    exitWithError("CLIENT: Plain text file length does not match key lenght", 1);
+    exitWithError("CLIENT: Plain text file length does not match key length", 1);
   }
 
   // Get return message from server
