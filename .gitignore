@@ -75,3 +75,5 @@ dec_client
 
 # Testoutput files
 mykey
+encryptedText
+decryptedText

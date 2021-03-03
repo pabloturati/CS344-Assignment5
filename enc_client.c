@@ -7,10 +7,7 @@
 #include "sharedMethods/sharedMethods.h"
 #include "constants/constants.h"
 #include "encryptionMethods/encryptionMethods.h"
-
 #define BUFFER_SIZE 2000
-
-int sendFileToServer(char *fileName, int socketFD);
 
 /**
 * Client code

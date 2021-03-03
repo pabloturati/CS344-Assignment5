@@ -74,10 +74,10 @@ int sendFileToServer(char *fileName, int socketFD)
   // Write plaintext file to the server
   if ((readSize = getline(&line, &len, fp)) != -1)
   {
-    printf("Retrieved line of length %zu:\n", readSize);
-    printf("%s", line);
+    // printf("Retrieved line of length %zu:\n", readSize);
+    // printf("%s", line);
     size = strcspn(line, "\n");
-    printf("Size %d\n", size);
+    // printf("Size %d\n", size);
     line[size] = '\0';
     int charsWritten = send(socketFD, line, strlen(line), 0);
     free(line);

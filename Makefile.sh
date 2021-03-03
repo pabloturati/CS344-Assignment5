@@ -6,6 +6,8 @@
 keygen="keygen"
 enc_server="enc_server"
 enc_client="enc_client"
+dec_server="dec_server"
+dec_client="dec_client"
 
 preCompilePackage="component_archive"
 
@@ -18,6 +20,8 @@ executableFilenames="
   "
 outputFiles="
   mykey
+  encryptedText
+  decryptedText
   "
 
 # Components
@@ -27,7 +31,8 @@ declare -a componentList=(
   "encryptionMethods"
 )
 
-port=57171
+encryptionPort=57171
+decryptionPort=86771
 
 # declare programList=(
 #   "keygen"
@@ -77,25 +82,31 @@ function main() {
   # compileMainAndArchive
   # Compile Keygen
   gcc --std=gnu99 -o $keygen ${keygen}.c ${preCompilePackage}.a
-  # Compule enc_server
+  # Compile enc_server
   gcc --std=gnu99 -o $enc_server ${enc_server}.c ${preCompilePackage}.a
-  # Compule enc_client
+  # Compile enc_client
   gcc --std=gnu99 -o $enc_client ${enc_client}.c ${preCompilePackage}.a
+  # Compile dec_server
+  gcc --std=gnu99 -o $dec_server ${dec_server}.c ${preCompilePackage}.a
+  # Compile dec_client
+  gcc --std=gnu99 -o $dec_client ${dec_client}.c ${preCompilePackage}.a
 
   # Post cleaning to eliminate temporary files
   postCompileClean
 
   # Run enc_server in background
-  ./enc_server $port &
+  ./enc_server $encryptionPort &
+
+  # Run enc_server in background
+  ./dec_server $decryptionPort &
 
   # Create a key of a certain size
   ./keygen 36 >mykey
 
   # Run
-  # enc_client plaintext1 testFiles/myshortkey 57171 > ciphertext1
-  # enc_client plaintext1 testFiles/myshortkey 57171 >ciphertext1
+  ./enc_client sourceFiles/plaintext1 mykey $encryptionPort >encryptedText
 
-  ./enc_client sourceFiles/plaintext1 mykey $port
+  ./dec_client encryptedText mykey $decryptionPort >decryptedText
 
   # Handles parameters to execute.
   # Param triggers:

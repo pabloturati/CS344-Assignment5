@@ -14,10 +14,10 @@ int encodeChar(char c)
 }
 
 /*
-Function to enconde using a key of the same length as text
+Function to encrypt a message using a key of the same length as text
 Input: msg-> value to encrypt (string), key-> encryption secret (string) 
   size -> string size (integer). Size must be identical for msg and key.
-Output: returns encripted message of the same length as key/message
+Output: returns encripted message of the same length as key/message (string *)
 */
 char *encryptionHandler(char *msg, char *key, int size)
 {
@@ -31,6 +31,34 @@ char *encryptionHandler(char *msg, char *key, int size)
   }
   encryptedMsg[i] = '\0';
   return encryptedMsg;
+}
+
+/*
+Function to dencrypt a message using a key of the same length as text
+Input: msg-> value to encrypt (string), key-> encryption secret (string) 
+  size -> string size (integer). Size must be identical for msg and key.
+Output: returns encripted message of the same length as key/message (string *)
+*/
+char *decryptHandler(char *msg, char *key, int size)
+{
+  char *decryptedMsg = (char *)calloc(size, sizeof(char));
+  int i = 0;
+  for (; i < size; i++)
+  {
+    int decodedVal = encodeChar(msg[i]) - encodeChar(key[i]);
+    if (decodedVal < 0)
+    {
+      decodedVal += TOTAL_AMOUNT_OF_CHARS;
+    }
+    else
+    {
+      decodedVal %= TOTAL_AMOUNT_OF_CHARS;
+    }
+    //if cypheredChar equals 26 (space character)
+    decryptedMsg[i] = decodedVal == SPACE_RAND_VAL ? ASVCII_VAL_OF_SPACE : decodedVal + ASCII_VAL_OF_A;
+  }
+  decryptedMsg[i] = '\0';
+  return decryptedMsg;
 }
 
 /*

@@ -5,5 +5,6 @@
 void exitWithError(const char *, int);
 void setupServerAddressStruct(struct sockaddr_in *, int);
 void setupClientAddressStruct(struct sockaddr_in *, int, char *);
+int sendFileToServer(char *, int);
 
 #endif
