@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
       fprintf(stderr, "DEC_SERVER_ERROR on accept\n");
     }
 
-    printf("DEC_SERVER_SERVER: Connected to client running at host %d port %d\n",
+    printf("DEC_SERVER: Connected to client running at host %d port %d\n",
            ntohs(clientAddress.sin_addr.s_addr),
            ntohs(clientAddress.sin_port));
 
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     {
       fprintf(stderr, "DEC_SERVER_ERROR reading from socket\n");
     }
-    printf("DEC_SERVER_SERVER: I received this encrypted text from the client: \"%s\"\n", plainTextBuffer);
+    printf("DEC_SERVER: I received this encrypted text from the client: \"%s\"\n", plainTextBuffer);
 
     // Read the key
     char keyBuffer[256];
@@ -77,10 +77,10 @@ int main(int argc, char *argv[])
     {
       fprintf(stderr, "DEC_SERVER_ERROR reading from socket\n");
     }
-    printf("DEC_SERVER_SERVER: I received this key from the client: \"%s\"\n", keyBuffer);
+    printf("DEC_SERVER: I received this key from the client: \"%s\"\n", keyBuffer);
 
     char *encryptedMessage = decryptHandler(plainTextBuffer, keyBuffer, charsRead);
-    printf("Decrypted message is %s with size %d\n", encryptedMessage, charsRead);
+    printf("DEC_SERVER: Decrypted message is %s with size %d\n", encryptedMessage, charsRead);
 
     charsRead = send(connectionSocket,
                      encryptedMessage, charsRead, 0);
