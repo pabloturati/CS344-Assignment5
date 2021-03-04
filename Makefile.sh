@@ -103,7 +103,8 @@ function deployServers() {
   # Run enc_server in background
   ./enc_server $encryptionPort &
   # Run enc_server in background
-  ./dec_server $decryptionPort &
+  # FIX Uncomment
+  # ./dec_server $decryptionPort &
 }
 
 # Function to calculate a file size.
@@ -155,7 +156,10 @@ function gerProcessIdOfServer() {
 # Function to kill both servers
 function killServerProcesses() {
   gerProcessIdOfServer enc_server $encryptionPort enc_server_pid
-  gerProcessIdOfServer dec_server $decryptionPort dec_server_pid
+  # gerProcessIdOfServer dec_server $decryptionPort dec_server_pid
+  # FIX Uncomment
+  # kill -SIGTERM $enc_server_pid $dec_server_pid
+  # FIX Remove
   kill -SIGTERM $enc_server_pid $dec_server_pid
   echo "MAKEFILE: Servers with PID $enc_server_pid and $dec_server_pid have been killed"
 }
@@ -183,6 +187,19 @@ function runTest() {
 # Function to do a quick run based on a file passed
 # arg 1: filename for quickrun
 function completerRun() {
+  deployServers
+  crateKeyForFile $currTestFile $keyFilename
+  ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename
+  # ./enc_client $currTestFile $keyFilename $encryptionPort
+  # ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename
+  # ./dec_client $encryptedTextFilename $keyFilename $decryptionPort
+  # runTest $currTestFile $decryptedTextFilename
+  killServerProcesses
+}
+
+# Function to do a quick run based on a file passed
+# arg 1: filename for quickrun
+function completerRunBySteps() {
   deployServers && crateKeyForFile $currTestFile $keyFilename && ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename && ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename && runTest $currTestFile $decryptedTextFilename
   killServerProcesses
 }

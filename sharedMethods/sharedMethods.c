@@ -14,3 +14,9 @@ void freeMemoryAndCloseFile(char *line, FILE *fp)
   free(line);
   fclose(fp);
 }
+
+void validateArgCount(int argc, int expectedArgc, char *errorMsg)
+{
+  if (argc < expectedArgc)
+    exitWithError(errorMsg, 1);
+}

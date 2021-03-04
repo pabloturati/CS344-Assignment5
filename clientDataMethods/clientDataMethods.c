@@ -84,3 +84,11 @@ int validateCharacters(char *filename)
   }
   return size;
 }
+
+void validateTextFileAndKey(char *textFilename, char *keyFilename)
+{
+  int textfileLength = validateCharacters(textFilename);
+  int keyFileLength = validateCharacters(keyFilename);
+  if (textfileLength != keyFileLength)
+    exitWithError("CLIENT: ERROR source file length does not match key length", 1);
+}

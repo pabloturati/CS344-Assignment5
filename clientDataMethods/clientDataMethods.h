@@ -4,5 +4,6 @@
 
 int validateCharacters(char *);
 int sendFileToServer(char *, int);
+void validateTextFileAndKey(char *, char *);
 
 #endif
