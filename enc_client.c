@@ -7,6 +7,10 @@
 #include "sharedMethods/sharedMethods.h"
 #include "constants/constants.h"
 #include "encryptionMethods/encryptionMethods.h"
+#include "clientDataMethods/clientDataMethods.h"
+#include "clientNetworkMethods/clientNetworkMethods.h"
+
+// FIX
 #define BUFFER_SIZE 2000
 
 /**
@@ -27,7 +31,12 @@ int main(int argc, char *argv[])
     exitWithError("USAGE: %s plaintextFilepath keyFilepath portNumber", 0);
   }
 
+  // Validate characters are valid
+  validateCharacters(argv[1]);
+
   // Create a socket
+
+  // int socketFD = createSocketAndConnectServer(atoi(argv[3]));
   int socketFD = socket(AF_INET, SOCK_STREAM, 0);
   if (socketFD < 0)
   {

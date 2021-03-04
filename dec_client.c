@@ -7,6 +7,8 @@
 #include "sharedMethods/sharedMethods.h"
 #include "constants/constants.h"
 #include "encryptionMethods/encryptionMethods.h"
+#include "clientDataMethods/clientDataMethods.h"
+#include "clientNetworkMethods/clientNetworkMethods.h"
 
 #define BUFFER_SIZE 2000
 

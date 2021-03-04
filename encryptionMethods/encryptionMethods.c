@@ -72,3 +72,14 @@ int createRandomNumberInRange(int lowerLimit, int upperLimit)
 {
   return (rand() % (upperLimit - lowerLimit + 1)) + lowerLimit;
 }
+
+/*
+Function to validate that a specific character is between A-Z or space
+Input: c-> character to validate (char)
+Output: returns encripted message of the same length as key/message
+*/
+
+int isValidCharacter(char c)
+{
+  return (c >= ASCII_VAL_OF_A && c <= ASCII_VAL_OF_Z) || c == ASVCII_VAL_OF_SPACE;
+}

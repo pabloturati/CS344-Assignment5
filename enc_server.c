@@ -8,6 +8,7 @@
 #include "sharedMethods/sharedMethods.h"
 #include "constants/constants.h"
 #include "encryptionMethods/encryptionMethods.h"
+#include "serverNetworkMethods/serverNetworkMethods.h"
 
 int main(int argc, char *argv[])
 {

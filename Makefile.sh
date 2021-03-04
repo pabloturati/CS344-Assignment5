@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Test data
-currTestFile="testFiles/plaintext5"
+currTestFile="testFiles/plaintext1"
 keyFilename="mykey"
 encryptedTextFilename="encryptedText"
 decryptedTextFilename="decryptedText"
@@ -27,8 +27,12 @@ declare -a componentList=(
   "constants"
   "sharedMethods"
   "encryptionMethods"
+  "serverNetworkMethods"
+  "clientNetworkMethods"
+  "clientDataMethods"
 )
 
+# Port ranges
 minPort=49152
 maxPort=65535
 
@@ -62,10 +66,12 @@ function postCompileClean() {
   rm -f *.o *.a
 }
 
+# Creates a precompiled object file "*.o" to be used by archive
 function generatePrecompiledObject() {
   gcc --std=gnu99 -c ${1}/${1}.c
 }
 
+# Takes in all object files "*.o" and creates a precompiled archive
 function generateModuleObjectsAndArchive() {
   # Stores object list
   precompileObjectList=""
@@ -161,9 +167,8 @@ function postQuickRunClean() {
 # 1 - original file
 # 2 - output file to compare the original file
 function runTest() {
-  echo "MAKEFILE: Testing $1"
-  # Run test 1
   echo "*******************"
+  echo "MAKEFILE: Testing $1"
   if cmp -s $1 $2; then
     printf "MAKEFILE: PASS.  $1 is identical to $2 \n"
   else
@@ -175,18 +180,14 @@ function runTest() {
 # Function to do a quick run based on a file passed
 # arg 1: filename for quickrun
 function completerRun() {
-  deployServers
-  crateKeyForFile $currTestFile $keyFilename
-  ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename
-  ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename
-  runTest $currTestFile $decryptedTextFilename
+  deployServers && crateKeyForFile $currTestFile $keyFilename && ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename && ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename && runTest $currTestFile $decryptedTextFilename
   killServerProcesses
 }
 
 function fullClean() {
   preCompileClean
   postQuickRunClean
-  clear
+  # clear
 }
 
 function main() {
@@ -209,13 +210,15 @@ function main() {
   # k - kill both server processes
   # q - do a test run with a
   # f - to do a full clean of the project output and compile files
-  while getopts "sn:kqf" flag; do
+  # z - runs grading script
+  while getopts "sn:kqfz" flag; do
     case $flag in
     s) deployServers ;;
     n) crateKeyForFile $OPTARG mykey ;;
     k) killServerProcesses ;;
     q) completerRun ;;
     f) fullClean ;;
+    z) ./p5testscript $encryptionPort $decryptionPort ;;
     esac
     shift
   done
