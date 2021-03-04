@@ -31,27 +31,11 @@ int main(int argc, char *argv[])
     exitWithError("USAGE: %s plaintextFilepath keyFilepath portNumber", 0);
   }
 
-  // Validate characters are valid
+  // Validate characters
   validateCharacters(argv[1]);
 
-  // Create a socket
-
-  // int socketFD = createSocketAndConnectServer(atoi(argv[3]));
-  int socketFD = socket(AF_INET, SOCK_STREAM, 0);
-  if (socketFD < 0)
-  {
-    exitWithError("CLIENT: ERROR opening socket", 1);
-  }
-
-  // Set up the server address struct
-  int portNumber = atoi(argv[3]);
-  setupClientAddressStruct(&serverAddress, portNumber, HOSTNAME);
-
-  // Connect to server
-  if (connect(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
-  {
-    exitWithError("CLIENT: ERROR connecting", 1);
-  }
+  // Create a socket, setup address struct and connect to server
+  int socketFD = createSocketAndConnectServer(atoi(argv[3]));
 
   // Send plaintext file to server
   int plainTextSize = sendFileToServer(argv[1], socketFD);

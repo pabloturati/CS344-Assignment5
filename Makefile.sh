@@ -36,6 +36,9 @@ declare -a componentList=(
 minPort=49152
 maxPort=65535
 
+# minPort=491
+# maxPort=655
+
 # Ports initialized to empty
 encryptionPort=""
 decryptionPort=""
@@ -96,7 +99,7 @@ function compileApplications() {
 
 # Deploys both encryption and decryption servers in background
 function deployServers() {
-  echo "MAKEFILE: Deploying servers"
+  echo "MAKEFILE: Deploying servers encryptionPort: $encryptionPort decryptionPort: $decryptionPort"
   # Run enc_server in background
   ./enc_server $encryptionPort &
   # Run enc_server in background

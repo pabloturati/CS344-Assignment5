@@ -33,22 +33,22 @@ void setupClientAddressStruct(struct sockaddr_in *address, int portNumber, char 
          hostInfo->h_length);
 }
 
-// int createSocketAndConnectServer(int portNumber)
-// {
-//   struct sockaddr_in serverAddress;
-//   int socketFD = socket(AF_INET, SOCK_STREAM, 0);
-//   if (socketFD < 0)
-//   {
-//     exitWithError("CLIENT: ERROR opening socket", 1);
-//   }
+int createSocketAndConnectServer(int portNumber)
+{
+  struct sockaddr_in serverAddress;
+  int socketFD = socket(AF_INET, SOCK_STREAM, 0);
+  if (socketFD < 0)
+  {
+    exitWithError("CLIENT: ERROR opening socket", 1);
+  }
 
-//   // Set up the server address struct
-//   setupClientAddressStruct(&serverAddress, portNumber, HOSTNAME);
+  // Set up the server address struct
+  setupClientAddressStruct(&serverAddress, portNumber, HOSTNAME);
 
-//   // Connect to server
-//   if (connect(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
-//   {
-//     exitWithError("CLIENT: ERROR connecting", 1);
-//   }
-//   return socketFD;
-// }
+  // Connect to server
+  if (connect(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
+  {
+    exitWithError("CLIENT: ERROR connecting", 1);
+  }
+  return socketFD;
+}
