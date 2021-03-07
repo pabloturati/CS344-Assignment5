@@ -29,7 +29,7 @@ char *encryptionHandler(char *msg, char *key, int size)
     //if cypheredChar equals 26 (space character)
     encryptedMsg[i] = cypherChar == SPACE_RAND_VAL ? ASVCII_VAL_OF_SPACE : cypherChar + ASCII_VAL_OF_A;
   }
-  encryptedMsg[i] = '\0';
+  encryptedMsg[i] = END_STRING_CHARACTER;
   return encryptedMsg;
 }
 
@@ -70,7 +70,7 @@ char *decryptHandler(char *msg, char *key, int size)
     //if cypheredChar equals 26 (space character)
     decryptedMsg[i] = decodedVal == SPACE_RAND_VAL ? ASVCII_VAL_OF_SPACE : decodedVal + ASCII_VAL_OF_A;
   }
-  decryptedMsg[i] = '\0';
+  decryptedMsg[i] = END_STRING_CHARACTER;
   return decryptedMsg;
 }
 
