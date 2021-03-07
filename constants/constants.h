@@ -23,6 +23,9 @@
 #define READ_BUFFER_SIZE 4
 #define WRITE_BUFFER_SIZE 4
 
+#define ENC_SERVER_ARG_COUNT 2
+#define ENC_CLIENT_ARG_COUNT 3
+
 /****** Error messages *******/
 const char *KEY_GEN_TOO_FEW_ARGS;
 

@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   int connectionSocket;
 
   // Check usage & args
-  validateArgCount(argc, 2, ENC_SERVER_ARG_COUNT_ERROR_MSG);
+  validateArgCount(argc, ENC_SERVER_ARG_COUNT, ENC_SERVER_ARG_COUNT_ERROR_MSG);
 
   // Create the socket that will listen for connections
   int listenSocket = createServerSocketAndListenForConnections(atoi(argv[1]));

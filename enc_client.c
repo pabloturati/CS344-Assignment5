@@ -21,8 +21,8 @@ char *ENC_CLIENT_ARG_COUNT_ERROR_MSG = "ENC_CLIENT: Usage = %s plaintextFilename
 
 int main(int argc, char *argv[])
 {
-  // Validations
-  validateArgCount(argc, 3, ENC_CLIENT_ARG_COUNT_ERROR_MSG);
+  // Input data validations
+  validateArgCount(argc, ENC_CLIENT_ARG_COUNT, ENC_CLIENT_ARG_COUNT_ERROR_MSG);
   int fileLength = validateTextFileAndKey(argv[1], argv[2]);
 
   // Create a socket, setup address struct and connect to server
