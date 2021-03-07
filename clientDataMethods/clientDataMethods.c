@@ -15,23 +15,19 @@ Input: fileName-> path to file to send (string),
   socketFd-> socket file descriptor (integer) 
 Output: returns encripted message of the same length as key/message
 */
-int sendFileToServer(char *fileName, int socketFD)
+int sendFileToServer(char *filename, int socketFD)
 {
-  FILE *fp;
+  FILE *fp = openFileForReading(filename);
   char *line = NULL;
   size_t len = 0;
   ssize_t readSize;
   int size;
 
-  fp = fopen(fileName, "r");
-  if (fp == NULL)
-    exit(EXIT_FAILURE);
-
   // Write plaintext file to the server
   while ((readSize = getline(&line, &len, fp)) != -1)
   {
-    size = strcspn(line, "\n");
-    line[size] = '\0';
+    size = strcspn(line, NEW_LINE_CHARACTER_STR);
+    line[size] = END_STRING_CHARACTER;
     int charsWritten = send(socketFD, line, strlen(line), 0);
     if (charsWritten < 0)
     {
@@ -88,4 +84,19 @@ int validateTextFileAndKey(char *textFilename, char *keyFilename)
   if (textfileLength != keyFileLength)
     exitWithError("CLIENT: ERROR source file length does not match key length", 1);
   return textfileLength;
+}
+
+void handleSendFilesToServer(int socketFD, char *file1, char *file2)
+{
+  // Send first file to server
+  sendFileToServer(file1, socketFD);
+
+  // Send flag to mark end of first file
+  send(socketFD, FILE_CHANGE_FLAG_STR, 1, 0);
+
+  // Send key file to server
+  sendFileToServer(file2, socketFD);
+
+  // Send flag to mark end of second file
+  send(socketFD, FILE_CHANGE_FLAG_STR, 1, 0);
 }

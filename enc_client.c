@@ -28,22 +28,13 @@ int main(int argc, char *argv[])
   // Create a socket, setup address struct and connect to server
   int socketFD = createClientSocketAndConnectServer(atoi(argv[3]));
 
-  char temp1[21];
-  strcpy(temp1, "ABCDEFR&");
-  int size1 = strlen(temp1);
-  // printf("Size of first string is %d\n", size1);
-  send(socketFD, temp1, strlen(temp1), 0);
+  // Send plaintext file and key file to server
+  handleSendFilesToServer(socketFD, argv[1], argv[2]);
 
-  char temp2[21];
-  strcpy(temp2, "GHIJKMD&");
-  int size2 = strlen(temp2);
-  // printf("Size of second string is %d\n", size2);
-  send(socketFD, temp2, strlen(temp2), 0);
-
-  // Get return message from server
+  // Get encrypted data from server and write it to stdout
   handleReceiveData(socketFD);
 
-  // Close the socket
+  // Close socket
   close(socketFD);
   return 0;
 }
