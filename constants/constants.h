@@ -29,7 +29,7 @@
 #define ENC_SERVER_ARG_COUNT 2
 #define ENC_CLIENT_ARG_COUNT 3
 
-/****** Error messages *******/
 const char *KEY_GEN_TOO_FEW_ARGS;
+char *ENC_CLIENT_ARG_COUNT_ERROR_MSG;
 
 #endif
