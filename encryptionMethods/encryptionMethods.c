@@ -34,6 +34,19 @@ char *encryptionHandler(char *msg, char *key, int size)
 }
 
 /*
+Function to encrypt a message using a key of the same length as text
+Input: msg-> value to encrypt (string), key-> encryption secret (string) 
+  size -> string size (integer). Size must be identical for msg and key.
+Output: returns encripted message of the same length as key/message (string *)
+*/
+char encryptChar(char rawChar, char keyChar)
+{
+  int encryptedChar = (encodeChar(rawChar) + encodeChar(keyChar)) % TOTAL_AMOUNT_OF_CHARS;
+  //if cypheredChar equals 26 (space character)
+  return encryptedChar == SPACE_RAND_VAL ? ASVCII_VAL_OF_SPACE : encryptedChar + ASCII_VAL_OF_A;
+}
+
+/*
 Function to dencrypt a message using a key of the same length as text
 Input: msg-> value to encrypt (string), key-> encryption secret (string) 
   size -> string size (integer). Size must be identical for msg and key.

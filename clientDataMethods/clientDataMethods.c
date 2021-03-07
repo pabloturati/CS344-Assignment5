@@ -56,15 +56,11 @@ Output: returns encripted message of the same length as key/message
 */
 int validateCharacters(char *filename)
 {
-  FILE *fp;
+  FILE *fp = openFileForReading(filename);
   char *line = NULL;
   size_t len = 0;
   ssize_t readSize;
   int size;
-
-  fp = fopen(filename, "r");
-  if (fp == NULL)
-    exit(EXIT_FAILURE);
 
   // Write plaintext file to the server
   while ((readSize = getline(&line, &len, fp)) != -1)
@@ -85,10 +81,11 @@ int validateCharacters(char *filename)
   return size;
 }
 
-void validateTextFileAndKey(char *textFilename, char *keyFilename)
+int validateTextFileAndKey(char *textFilename, char *keyFilename)
 {
   int textfileLength = validateCharacters(textFilename);
   int keyFileLength = validateCharacters(keyFilename);
   if (textfileLength != keyFileLength)
     exitWithError("CLIENT: ERROR source file length does not match key length", 1);
+  return textfileLength;
 }

@@ -11,6 +11,17 @@
 #define HOSTNAME "localhost"
 #define FALSE 0
 #define TRUE 1
+#define MAX_NUM_OF_CONNECTIONS 5
+
+#define TEMP_FILENAME_SIZE 128
+#define TEMP_RAWFILE_FILENAME_PREFIX "tempReceivedRawTextFile_%d"
+#define TEMP_KEY_FILENAME_PREFIX "tempReceivedKeyFile_%d"
+#define TEMP_ENCRYPTED_FILENAME_PREFIX "tempEncryptedFile_%d"
+#define FILE_CHANGE_FLAG '&'
+#define NEW_LINE_CHARACTER '\n'
+
+#define READ_BUFFER_SIZE 4
+#define WRITE_BUFFER_SIZE 4
 
 /****** Error messages *******/
 const char *KEY_GEN_TOO_FEW_ARGS;

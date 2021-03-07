@@ -33,7 +33,7 @@ void setupClientAddressStruct(struct sockaddr_in *address, int portNumber, char 
          hostInfo->h_length);
 }
 
-int createSocketAndConnectServer(int portNumber)
+int createClientSocketAndConnectServer(int portNumber)
 {
   struct sockaddr_in serverAddress;
   int socketFD = socket(AF_INET, SOCK_STREAM, 0);

@@ -20,6 +20,9 @@ outputFiles="
   $keyFilename
   $encryptedTextFilename
   $decryptedTextFilename
+  tempReceivedRawTextFile_*
+  tempReceivedKeyFile_* 
+  tempEncryptedFile_*
   "
 
 # Components
@@ -30,6 +33,7 @@ declare -a componentList=(
   "serverNetworkMethods"
   "clientNetworkMethods"
   "clientDataMethods"
+  "serverDataMethods"
 )
 
 # Port ranges
