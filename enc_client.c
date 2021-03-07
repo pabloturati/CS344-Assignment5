@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include "sharedMethods/sharedMethods.h"
 #include "constants/constants.h"
@@ -19,7 +18,7 @@ int main(int argc, char *argv[])
   // Create a socket, setup address struct and connect to server
   int socketFD = createClientSocketAndConnectServer(atoi(argv[3]));
 
-  // Send plaintext file and key file to server
+  // Send plaintext and key files to server
   handleSendFilesToServer(socketFD, argv[1], argv[2]);
 
   // Get encrypted data from server and write it to stdout
