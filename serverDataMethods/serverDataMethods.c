@@ -17,13 +17,12 @@ void verifyKeyAndFileSizesMatch(int rawTextLength, int keyLength)
     exitWithError(SERVER_KEY_LENGTH_ERROR_MSG, DEFAULT_ERROR_EXIT_CODE);
 }
 
-int printFileContents(FILE *fp)
+int countTextLength(FILE *fp)
 {
   char c = fgetc(fp);
   int size = 0;
   while (c != EOF)
   {
-    printf("%c", c);
     c = fgetc(fp);
     ++size;
   }
@@ -116,7 +115,7 @@ void handleServerFileProcess(int connectionSocket, void (*encryptionFunction)(FI
   rewind(tempEncryptedFp);
 
   // Print encryption file contents to server console
-  int encryptedFileSize = printFileContents(tempEncryptedFp);
+  int encryptedFileSize = countTextLength(tempEncryptedFp);
 
   // Rewind encryption file after writing it
   rewind(tempEncryptedFp);
@@ -172,9 +171,7 @@ void sendFileUsingSocket(int connectionSocket, FILE *filePointer, const int file
     // Send data to client
     int charsRead = send(connectionSocket, buffer, buffIdx + 1, 0);
     if (charsRead < 0)
-    {
       fprintf(stderr, "%s", SERVER_ERROR_WRITING_TO_SOCKET_MSG);
-    }
 
     //Increase transmission counter
     transmissionCounter += buffIdx;

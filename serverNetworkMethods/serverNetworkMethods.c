@@ -3,9 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <netinet/in.h>
-#include <sys/types.h>  // ssize_t
-#include <sys/socket.h> // send(),recv()
-#include <netdb.h>      // gethostbyname()
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #include "../sharedMethods/sharedMethods.h"
 #include "../constants/constants.h"
 
@@ -58,8 +58,5 @@ int acceptClientConnection(int listenSocket)
   if (connectionSocket < 0)
     fprintf(stderr, "%s", SERVER_ACCEPT_CONNECTION_ERROR_MSG);
 
-  printf(SERVER_CONNECTION_CONFIRM_MSG,
-         ntohs(clientAddress.sin_addr.s_addr),
-         ntohs(clientAddress.sin_port));
   return connectionSocket;
 }

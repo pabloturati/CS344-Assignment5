@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void verifyKeyAndFileSizesMatch(int, int);
-int printFileContents(FILE *);
+int countTextLength(FILE *);
 void writeTempRawTextAndKeyFiles(int, FILE *, FILE *);
 void closeAndDeleteFile(FILE *, char *);
 void handleServerFileProcess(int, void (*)(FILE *, FILE *, FILE *));
