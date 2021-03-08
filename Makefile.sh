@@ -42,9 +42,6 @@ declare -a componentList=(
 minPort=49152
 maxPort=65535
 
-# minPort=491
-# maxPort=655
-
 # Ports initialized to empty
 encryptionPort=""
 decryptionPort=""
