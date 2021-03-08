@@ -1,10 +1,10 @@
 #! /bin/bash
 
 # Test data
-currTestFile="testFiles/plaintext1"
 keyFilename="mykey"
 encryptedTextFilename="encryptedText"
 decryptedTextFilename="decryptedText"
+testFilesPrefix="testFiles/plaintext"
 
 # Build data
 preCompilePackage="component_archive"
@@ -169,37 +169,49 @@ function postQuickRunClean() {
   rm -f $keyFilename $encryptedTextFilename $decryptedTextFilename
 }
 
-# Function to compare output file with expected output file
+# Compares output file with expected output file
 # Arg list
 # 1 - original file
 # 2 - output file to compare the original file
+# 3 - result is expected to fail. If param is passed, test PASES when cmp is NOT the same
 function runTest() {
   echo "*******************"
-  echo "MAKEFILE: Testing $1"
   if cmp -s $1 $2; then
-    printf "MAKEFILE: PASS.  $1 is identical to $2 \n"
+    printf "MAKEFILE Test $1: PASS -> $1 is identical to $2 \n"
   else
-    printf "MAKEFILE: FAIL The files do not match\n"
+    printf "MAKEFILE Test $1: FAIL -> $1 does not match $2\n"
   fi
   echo "*******************"
 }
 
-# Function to do a quick run based on a file passed
+# Runs full run creating a key, encrypting and decrypting
+# Arg list
+# 1 - Raw text file
+function runCryptoProcess() {
+  crateKeyForFile $1 $keyFilename
+  ./enc_client $1 $keyFilename $encryptionPort >$encryptedTextFilename
+  ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename
+}
+
+# Does a quick run based on a file passed
 # arg 1: filename for quickrun
 function completerRun() {
   deployServers
-  crateKeyForFile $currTestFile $keyFilename
-  ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename
-  ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename
-  # ./dec_client $encryptedTextFilename $keyFilename $decryptionPort
-  runTest $currTestFile $decryptedTextFilename
-  killServerProcesses
+  testFile="$testFilesPrefix$1"
+  runCryptoProcess $testFile
+  runTest $testFile $decryptedTextFilename
+  killServerProcesses $testFile
 }
 
-# Function to do a quick run based on a file passed
-# arg 1: filename for quickrun
-function completerRunBySteps() {
-  deployServers && crateKeyForFile $currTestFile $keyFilename && ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename && ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename && runTest $currTestFile $decryptedTextFilename
+function testAll() {
+  deployServers
+  resultsFile="results$$"
+  for i in $(seq 1 5); do
+    filePath="$testFilesPrefix$i"
+    runCryptoProcess $filePath >>$resultsFile
+  done
+  cat $resultsFile
+  rm -f $resultsFile
   killServerProcesses
 }
 
@@ -226,16 +238,18 @@ function main() {
   # s - executable getting standard in from input1 testfile >run
   # n - generate key for a certain filename (arg = filename)
   # k - kill both server processes
-  # q - do a test run with a
+  # q - do a test run with a testfile. Arg is number 1 thru 5 for each plaintext file
   # f - to do a full clean of the project output and compile files
+  # u - tests all plaintext files in path testfiles/plaintext*
   # z - runs grading script
-  while getopts "sn:kqfz" flag; do
+  while getopts "sn:kq:1fzu" flag; do
     case $flag in
     s) deployServers ;;
     n) crateKeyForFile $OPTARG mykey ;;
     k) killServerProcesses ;;
-    q) completerRun ;;
+    q) completerRun $OPTARG ;;
     f) fullClean ;;
+    u) testAll ;;
     z) ./p5testscript $encryptionPort $decryptionPort ;;
     esac
     shift
