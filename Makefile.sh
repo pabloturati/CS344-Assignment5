@@ -23,6 +23,8 @@ outputFiles="
   tempReceivedRawTextFile_*
   tempReceivedKeyFile_* 
   tempEncryptedFile_*
+  key20
+  key70000
   "
 
 # Components
