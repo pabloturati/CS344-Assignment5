@@ -4,7 +4,7 @@
 keyFilename="mykey"
 encryptedTextFilename="encryptedText"
 decryptedTextFilename="decryptedText"
-testFilesPrefix="testFiles/plaintext"
+testFilesPrefix="plaintext"
 
 # Build data
 preCompilePackage="component_archive"
