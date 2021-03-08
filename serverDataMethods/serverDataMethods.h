@@ -4,9 +4,9 @@
 #include <stdio.h>
 
 void verifyKeyAndFileSizesMatch(int, int);
-void writeEncryptedFile(FILE *, FILE *, FILE *);
 int printFileContents(FILE *fp);
 void writeTempRawTextAndKeyFiles(int, FILE *, FILE *);
 void closeAndDeleteFile(FILE *, char *);
+void handleServerFileProcess(int, void (*f)(FILE *, FILE *, FILE *));
 
 #endif

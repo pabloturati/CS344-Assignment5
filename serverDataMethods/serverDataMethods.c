@@ -17,25 +17,6 @@ void verifyKeyAndFileSizesMatch(int rawTextLength, int keyLength)
     exitWithError("ENC_SERVER_ERROR: Raw text file length does not match key", 1);
 }
 
-void writeEncryptedFile(FILE *tempRawTextFp, FILE *tempKeyFp, FILE *tempEncryptedTextFd)
-{
-  // printf("marcador B\n");
-  char rawTextChar, keyChar, encryptedChar;
-  while (TRUE)
-  {
-    // printf("marcador C\n");
-    rawTextChar = fgetc(tempRawTextFp);
-    // printf("rawTextChar: %c\n", rawTextChar);
-    keyChar = fgetc(tempKeyFp);
-    if (rawTextChar == '\n' || rawTextChar == EOF)
-      break;
-    encryptedChar = encryptChar(rawTextChar, keyChar);
-    // printf("En encryption-encrypted Char: %c\n", encryptedChar);
-    char result = fputc(encryptedChar, tempEncryptedTextFd);
-  }
-  fputc('\n', tempEncryptedTextFd);
-}
-
 int printFileContents(FILE *fp)
 {
   char c = fgetc(fp);
@@ -102,4 +83,46 @@ void closeAndDeleteFile(FILE *fd, char *filename)
   fclose(fd);
   deleteFile(filename);
   free(filename);
+}
+
+void handleServerFileProcess(int connectionSocket, void (*encryptionFunction)(FILE *, FILE *, FILE *))
+{
+  // Create temporar filenames
+  char *tempRawTextFilename = createDynamicFilenameWithProcessId(TEMP_RAWFILE_FILENAME_PREFIX);
+  char *tempKeyFilename = createDynamicFilenameWithProcessId(TEMP_KEY_FILENAME_PREFIX);
+  char *tempEncryptedTextFilame = createDynamicFilenameWithProcessId(TEMP_ENCRYPTED_FILENAME_PREFIX);
+
+  // Open source files for writing
+  FILE *tempRawTextFp = openFileForReadingAndWriting(tempRawTextFilename);
+  FILE *tempKeyFp = openFileForReadingAndWriting(tempKeyFilename);
+
+  writeTempRawTextAndKeyFiles(connectionSocket, tempKeyFp, tempRawTextFp);
+
+  // Rewind source file descriptors
+  rewind(tempRawTextFp);
+  rewind(tempKeyFp);
+
+  // Create a temporary encrypt file and wirte it
+  FILE *tempEncryptedFp = openFileForReadingAndWriting(tempEncryptedTextFilame);
+
+  // Encrypt or decrypt file (passed as function pointer)
+  (*encryptionFunction)(tempRawTextFp, tempKeyFp, tempEncryptedFp);
+
+  // Remove temporary source files
+  closeAndDeleteFile(tempRawTextFp, tempRawTextFilename);
+  closeAndDeleteFile(tempKeyFp, tempKeyFilename);
+
+  // Rewind encryption file after writing it
+  rewind(tempEncryptedFp);
+
+  // Print encryption file contents to server console
+  int encryptedFileSize = printFileContents(tempEncryptedFp);
+
+  // Rewind encryption file after writing it
+  rewind(tempEncryptedFp);
+
+  sendFileUsingSocket(connectionSocket, tempEncryptedFp, encryptedFileSize);
+
+  // Remove temporary encryption output file
+  closeAndDeleteFile(tempEncryptedFp, tempEncryptedTextFilame);
 }
