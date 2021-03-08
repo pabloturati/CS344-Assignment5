@@ -67,12 +67,12 @@ void writeTempRawTextAndKeyFiles(int connectionSocket, FILE *tempKeyFp, FILE *te
     }
     if (signalCounter == 2)
       break;
-    memset(textBuffer, '\0', READ_BUFFER_SIZE);
+    memset(textBuffer, END_STRING_CHARACTER, READ_BUFFER_SIZE);
   }
 
   // Put a new line character in each file
-  fputc('\n', tempRawTextFp);
-  fputc('\n', tempKeyFp);
+  fputc(NEW_LINE_CHARACTER, tempRawTextFp);
+  fputc(NEW_LINE_CHARACTER, tempKeyFp);
 
   // Validates that key and raw text file lengths match
   verifyKeyAndFileSizesMatch(rawTextLength, keyLength);
