@@ -126,3 +126,22 @@ void handleServerFileProcess(int connectionSocket, void (*encryptionFunction)(FI
   // Remove temporary encryption output file
   closeAndDeleteFile(tempEncryptedFp, tempEncryptedTextFilame);
 }
+
+void transformData(
+    FILE *tempRawTextFp,
+    FILE *tempKeyFp,
+    FILE *tempEncryptedTextFd,
+    char (*cryptographicMethod)(char, char))
+{
+  char rawTextChar, keyChar, encryptedChar;
+  while (TRUE)
+  {
+    rawTextChar = fgetc(tempRawTextFp);
+    keyChar = fgetc(tempKeyFp);
+    if (rawTextChar == NEW_LINE_CHARACTER || rawTextChar == EOF)
+      break;
+    encryptedChar = encryptChar(rawTextChar, keyChar);
+    fputc(encryptedChar, tempEncryptedTextFd);
+  }
+  fputc(NEW_LINE_CHARACTER, tempEncryptedTextFd);
+}

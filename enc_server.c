@@ -11,8 +11,6 @@
 #include "serverNetworkMethods/serverNetworkMethods.h"
 #include "serverDataMethods/serverDataMethods.h"
 
-char *ENC_SERVER_ARG_COUNT_ERROR_MSG = "ENC_SERVER_ERROR: %s port\n";
-
 void writeEncryptedFile(FILE *, FILE *, FILE *);
 
 int main(int argc, char *argv[])
@@ -20,7 +18,7 @@ int main(int argc, char *argv[])
   int connectionSocket;
 
   // Check usage & args
-  validateArgCount(argc, ENC_SERVER_ARG_COUNT, ENC_SERVER_ARG_COUNT_ERROR_MSG);
+  validateArgCount(argc, ENC_SERVER_ARG_COUNT, SERVER_ARG_COUNT_ERROR_MSG);
 
   // Create the socket that will listen for connections
   int listenSocket = createServerSocketAndListenForConnections(atoi(argv[1]));
@@ -43,15 +41,5 @@ int main(int argc, char *argv[])
 
 void writeEncryptedFile(FILE *tempRawTextFp, FILE *tempKeyFp, FILE *tempEncryptedTextFd)
 {
-  char rawTextChar, keyChar, encryptedChar;
-  while (TRUE)
-  {
-    rawTextChar = fgetc(tempRawTextFp);
-    keyChar = fgetc(tempKeyFp);
-    if (rawTextChar == NEW_LINE_CHARACTER || rawTextChar == EOF)
-      break;
-    encryptedChar = encryptChar(rawTextChar, keyChar);
-    fputc(encryptedChar, tempEncryptedTextFd);
-  }
-  fputc(NEW_LINE_CHARACTER, tempEncryptedTextFd);
+  transformData(tempRawTextFp, tempKeyFp, tempEncryptedTextFd, encryptChar);
 }

@@ -42,8 +42,25 @@ Output: returns encripted message of the same length as key/message (string *)
 char encryptChar(char rawChar, char keyChar)
 {
   int encryptedChar = (encodeChar(rawChar) + encodeChar(keyChar)) % TOTAL_AMOUNT_OF_CHARS;
-  //if cypheredChar equals 26 (space character)
+  //If encrypted character equals 26 (space character) return the space character
   return encryptedChar == SPACE_RAND_VAL ? ASVCII_VAL_OF_SPACE : encryptedChar + ASCII_VAL_OF_A;
+}
+
+/*
+Function to encrypt a message using a key of the same length as text
+Input: msg-> value to encrypt (string), key-> encryption secret (string) 
+  size -> string size (integer). Size must be identical for msg and key.
+Output: returns encripted message of the same length as key/message (string *)
+*/
+char decryptChar(char rawChar, char keyChar)
+{
+  int decryptedChar = (encodeChar(rawChar) - encodeChar(keyChar));
+  if (decryptedChar < 0)
+    decryptedChar += TOTAL_AMOUNT_OF_CHARS;
+  else
+    decryptedChar %= TOTAL_AMOUNT_OF_CHARS;
+  // If decrypted character equals 26 (space character) return the space character
+  return decryptedChar == SPACE_RAND_VAL ? ASVCII_VAL_OF_SPACE : decryptedChar + ASCII_VAL_OF_A;
 }
 
 /*
