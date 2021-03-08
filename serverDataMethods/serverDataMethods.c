@@ -140,7 +140,7 @@ void transformData(
     keyChar = fgetc(tempKeyFp);
     if (rawTextChar == NEW_LINE_CHARACTER || rawTextChar == EOF)
       break;
-    encryptedChar = encryptChar(rawTextChar, keyChar);
+    encryptedChar = cryptographicMethod(rawTextChar, keyChar);
     fputc(encryptedChar, tempEncryptedTextFd);
   }
   fputc(NEW_LINE_CHARACTER, tempEncryptedTextFd);

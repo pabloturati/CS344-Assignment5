@@ -107,8 +107,7 @@ function deployServers() {
   # Run enc_server in background
   ./enc_server $encryptionPort &
   # Run enc_server in background
-  # FIX Uncomment
-  # ./dec_server $decryptionPort &
+  ./dec_server $decryptionPort &
 }
 
 # Function to calculate a file size.
@@ -160,10 +159,7 @@ function gerProcessIdOfServer() {
 # Function to kill both servers
 function killServerProcesses() {
   gerProcessIdOfServer enc_server $encryptionPort enc_server_pid
-  # gerProcessIdOfServer dec_server $decryptionPort dec_server_pid
-  # FIX Uncomment
-  # kill -SIGTERM $enc_server_pid $dec_server_pid
-  # FIX Remove
+  gerProcessIdOfServer dec_server $decryptionPort dec_server_pid
   kill -SIGTERM $enc_server_pid $dec_server_pid
   echo "MAKEFILE: Servers with PID $enc_server_pid and $dec_server_pid have been killed"
 }
@@ -194,10 +190,9 @@ function completerRun() {
   deployServers
   crateKeyForFile $currTestFile $keyFilename
   ./enc_client $currTestFile $keyFilename $encryptionPort >$encryptedTextFilename
-  # ./enc_client $currTestFile $keyFilename $encryptionPort
-  # ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename
+  ./dec_client $encryptedTextFilename $keyFilename $decryptionPort >$decryptedTextFilename
   # ./dec_client $encryptedTextFilename $keyFilename $decryptionPort
-  # runTest $currTestFile $decryptedTextFilename
+  runTest $currTestFile $decryptedTextFilename
   killServerProcesses
 }
 
@@ -211,7 +206,6 @@ function completerRunBySteps() {
 function fullClean() {
   preCompileClean
   postQuickRunClean
-  # clear
 }
 
 function main() {
