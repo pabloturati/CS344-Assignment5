@@ -204,13 +204,11 @@ function completerRun() {
 
 function testAll() {
   deployServers
-  resultsFile="results$$"
-  for i in $(seq 1 5); do
+  for i in $(seq 1 4); do
     filePath="$testFilesPrefix$i"
-    runCryptoProcess $filePath >>$resultsFile
+    runCryptoProcess $filePath
+    runTest $filePath $decryptedTextFilename
   done
-  cat $resultsFile
-  rm -f $resultsFile
   killServerProcesses
 }
 
