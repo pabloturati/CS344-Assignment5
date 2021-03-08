@@ -14,7 +14,7 @@
 void verifyKeyAndFileSizesMatch(int rawTextLength, int keyLength)
 {
   if (rawTextLength != keyLength)
-    exitWithError("ENC_SERVER_ERROR: Raw text file length does not match key", 1);
+    exitWithError(SERVER_KEY_LENGTH_ERROR_MSG, DEFAULT_ERROR_EXIT_CODE);
 }
 
 int printFileContents(FILE *fp)
@@ -144,4 +144,42 @@ void transformData(
     fputc(encryptedChar, tempEncryptedTextFd);
   }
   fputc(NEW_LINE_CHARACTER, tempEncryptedTextFd);
+}
+
+void sendFileUsingSocket(int connectionSocket, FILE *filePointer, const int fileSize)
+{
+  //Read char by char to buffer
+  char buffer[WRITE_BUFFER_SIZE];
+  memset(buffer, END_STRING_CHARACTER, WRITE_BUFFER_SIZE); //FIX is this needed?
+  int transmissionCounter = 0;
+  const int adjustedFilesize = fileSize - 1;
+
+  while (transmissionCounter < adjustedFilesize)
+  {
+    int buffIdx = 0;
+    // Read char by char into the buffer
+    while (buffIdx < WRITE_BUFFER_SIZE - 1)
+    {
+      char curr = fgetc(filePointer);
+      if (curr == NEW_LINE_CHARACTER || curr == EOF)
+        break;
+      buffer[buffIdx] = curr;
+      ++buffIdx;
+    }
+    //Terminate package with null character
+    buffer[buffIdx + 1] = END_STRING_CHARACTER;
+
+    // Send data to client
+    int charsRead = send(connectionSocket, buffer, buffIdx + 1, 0);
+    if (charsRead < 0)
+    {
+      fprintf(stderr, "%s", SERVER_ERROR_WRITING_TO_SOCKET_MSG);
+    }
+
+    //Increase transmission counter
+    transmissionCounter += buffIdx;
+
+    //Clear buffer
+    memset(buffer, END_STRING_CHARACTER, WRITE_BUFFER_SIZE);
+  }
 }

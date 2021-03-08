@@ -13,7 +13,7 @@
 void setupClientAddressStruct(struct sockaddr_in *address, int portNumber, char *hostname)
 {
   // Clear out the address struct
-  memset((char *)address, '\0', sizeof(*address));
+  memset((char *)address, END_STRING_CHARACTER, sizeof(*address));
 
   // The address should be network capable
   address->sin_family = AF_INET;
@@ -24,7 +24,7 @@ void setupClientAddressStruct(struct sockaddr_in *address, int portNumber, char 
   struct hostent *hostInfo = gethostbyname(hostname);
   if (hostInfo == NULL)
   {
-    fprintf(stderr, "CLIENT: ERROR, no such host\n");
+    fprintf(stderr, "%s", CLIENT_NO_HOST_ERROR_MSG);
     exit(0);
   }
   // Copy the first IP address from the DNS entry to sin_addr.s_addr
@@ -38,17 +38,14 @@ int createClientSocketAndConnectServer(int portNumber)
   struct sockaddr_in serverAddress;
   int socketFD = socket(AF_INET, SOCK_STREAM, 0);
   if (socketFD < 0)
-  {
-    exitWithError("CLIENT: ERROR opening socket", 1);
-  }
+    exitWithError(CLIENT_ERROR_OPENING_SOCKER_MSG, DEFAULT_ERROR_EXIT_CODE);
 
   // Set up the server address struct
   setupClientAddressStruct(&serverAddress, portNumber, HOSTNAME);
 
   // Connect to server
   if (connect(socketFD, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0)
-  {
-    exitWithError("CLIENT: ERROR connecting", 1);
-  }
+    exitWithError(CLIENT_ERROR_CONNECTING_MSG, DEFAULT_ERROR_EXIT_CODE);
+
   return socketFD;
 }

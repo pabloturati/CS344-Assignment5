@@ -15,7 +15,7 @@ Input: fileName-> path to file to send (string),
   socketFd-> socket file descriptor (integer) 
 Output: returns encripted message of the same length as key/message
 */
-int sendFileToServer(char *filename, int socketFD)
+int sendFileToServer(char *filename, int socketFD, int specificSize)
 {
   FILE *fp = openFileForReading(filename);
   char *line = NULL;
@@ -26,18 +26,22 @@ int sendFileToServer(char *filename, int socketFD)
   // Write plaintext file to the server
   while ((readSize = getline(&line, &len, fp)) != -1)
   {
-    size = strcspn(line, NEW_LINE_CHARACTER_STR);
+    // Use size passed as param. Else calculate it based on endline character.
+    size = specificSize == 0
+               ? strcspn(line, NEW_LINE_CHARACTER_STR)
+               : specificSize;
+
     line[size] = END_STRING_CHARACTER;
     int charsWritten = send(socketFD, line, strlen(line), 0);
     if (charsWritten < 0)
     {
       freeMemoryAndCloseFile(line, fp);
-      exitWithError("CLIENT: ERROR writing to socket", 1);
+      exitWithError(CLIENT_WRITE_TO_SOCKET_ERROR_MSG, 1);
     }
     if (charsWritten < strlen(line))
     {
       freeMemoryAndCloseFile(line, fp);
-      exitWithError("CLIENT: WARNING: Not all data written to socket!\n", 1);
+      exitWithError(CLIENT_INCOMPLETE_WRITE_TO_SOCKET_WARNING, 1);
     }
   }
   freeMemoryAndCloseFile(line, fp);
@@ -62,14 +66,14 @@ int validateCharacters(char *filename)
   while ((readSize = getline(&line, &len, fp)) != -1)
   {
     // Calculates the length of line (regardless of it containing new line)
-    size = strcspn(line, "\n");
+    size = strcspn(line, NEW_LINE_CHARACTER_STR);
 
     for (int i; i < size; i++)
     {
       if (!isValidCharacter(line[i]))
       {
         freeMemoryAndCloseFile(line, fp);
-        exitWithError("CLIENT: ERROR source file contains invalid characters", 1);
+        exitWithError(CLIENT_INVALID_CHARACTERS_MSG, 1);
       }
     }
     freeMemoryAndCloseFile(line, fp);
@@ -81,21 +85,21 @@ int validateTextFileAndKey(char *textFilename, char *keyFilename)
 {
   int textfileLength = validateCharacters(textFilename);
   int keyFileLength = validateCharacters(keyFilename);
-  if (textfileLength != keyFileLength)
-    exitWithError("CLIENT: ERROR source file length does not match key length", 1);
+  if (textfileLength > keyFileLength)
+    exitWithDinamicallyGeneratedMessage(KEY_FILE_SIZE_ERROR_MSG, keyFilename);
   return textfileLength;
 }
 
 void handleSendFilesToServer(int socketFD, char *file1, char *file2)
 {
   // Send first file to server
-  sendFileToServer(file1, socketFD);
+  int textSendLength = sendFileToServer(file1, socketFD, 0);
 
   // Send flag to mark end of first file
   send(socketFD, FILE_CHANGE_FLAG_STR, 1, 0);
 
   // Send key file to server
-  sendFileToServer(file2, socketFD);
+  sendFileToServer(file2, socketFD, textSendLength);
 
   // Send flag to mark end of second file
   send(socketFD, FILE_CHANGE_FLAG_STR, 1, 0);

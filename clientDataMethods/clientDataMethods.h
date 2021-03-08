@@ -3,7 +3,7 @@
 #define CLIENTDATAMETHODS_H
 
 int validateCharacters(char *);
-int sendFileToServer(char *, int);
+int sendFileToServer(char *, int, int);
 int validateTextFileAndKey(char *, char *);
 void handleSendFilesToServer(int, char *, char *);
 

@@ -8,7 +8,7 @@
 
 void exitWithError(const char *msg, int errorCode)
 {
-  fprintf(stderr, "%s\n", msg);
+  fprintf(stderr, "%s", msg);
   exit(errorCode);
 }
 
@@ -21,7 +21,14 @@ void freeMemoryAndCloseFile(char *line, FILE *fp)
 void validateArgCount(int argc, int expectedArgc, char *errorMsg)
 {
   if (argc < expectedArgc)
-    exitWithError(errorMsg, 1);
+    exitWithError(errorMsg, DEFAULT_ERROR_EXIT_CODE);
+}
+
+void exitWithDinamicallyGeneratedMessage(char *errorMsg, char *msgParam)
+{
+  char errorMsgBuffer[DYNAMIC_ERROR_MESSAGE_MAX_LENGTH];
+  sprintf(errorMsgBuffer, errorMsg, msgParam);
+  exitWithError(errorMsgBuffer, DEFAULT_ERROR_EXIT_CODE);
 }
 
 char *createDynamicFilenameWithProcessId(char *filenamePrefix)
@@ -35,76 +42,39 @@ FILE *openFile(char *filename, char *permission)
 {
   FILE *fd = fopen(filename, permission);
   if (fd == NULL)
-    exitWithError("Error opening file\n", EXIT_FAILURE);
+    exitWithError(ERROR_OPENING_FILE_MSG, EXIT_FAILURE);
   return fd;
 }
 
 FILE *openFileForReading(char *filename)
 {
-  return openFile(filename, "r");
+  return openFile(filename, FILE_READ_PERMISSION);
 }
 
 FILE *openFileForWriting(char *filename)
 {
-  return openFile(filename, "w");
+  return openFile(filename, FILE_WRITE_PERMISSION);
 }
 
 FILE *openFileForReadingAndWriting(char *filename)
 {
-  return openFile(filename, "w+");
-}
-
-void sendFileUsingSocket(int connectionSocket, FILE *filePointer, const int fileSize)
-{
-  //Read char by char to buffer
-  char buffer[WRITE_BUFFER_SIZE];
-  memset(buffer, '\0', WRITE_BUFFER_SIZE); //FIX is this needed?
-  int transmissionCounter = 0;
-  const int adjustedFilesize = fileSize - 1;
-
-  while (transmissionCounter < adjustedFilesize)
-  {
-    int buffIdx = 0;
-    // Read char by char into the buffer
-    while (buffIdx < WRITE_BUFFER_SIZE - 1)
-    {
-      char curr = fgetc(filePointer);
-      if (curr == '\n' || curr == EOF)
-        break;
-      buffer[buffIdx] = curr;
-      ++buffIdx;
-    }
-    //Terminate package with null character
-    buffer[buffIdx + 1] = '\0';
-
-    // Send data to client
-    int charsRead = send(connectionSocket, buffer, buffIdx + 1, 0);
-    if (charsRead < 0)
-    {
-      fprintf(stderr, "ENC_SERVER_ERROR writing to socket\n");
-    }
-
-    //Increase transmission counter
-    transmissionCounter += buffIdx;
-
-    //Clear buffer
-    memset(buffer, '\0', WRITE_BUFFER_SIZE);
-  }
+  return openFile(filename, READ_AND_WRITE_PERMISSION);
 }
 
 int deleteFile(char *filename)
 {
   if (remove(filename) != 0)
-    printf("Unable to delete the file");
+  {
+    fprintf(stderr, "%s", DELETE_FILE_ERROR_MSG);
+    return DEFAULT_ERROR_EXIT_CODE;
+  }
   return 0;
 }
 
 void inspectForSocketReadError(int charsRead)
 {
   if (charsRead < 0)
-  {
-    fprintf(stderr, "ERROR: reading from socket\n");
-  }
+    fprintf(stderr, "%s", SOCKET_READ_ERROR_MSG);
 }
 
 void handleReceiveData(int connectionSocket)
@@ -112,18 +82,16 @@ void handleReceiveData(int connectionSocket)
   char textBuffer[READ_BUFFER_SIZE];
   int charsRead;
 
-  // char stdOutWriteBuffer[3];
-
   while ((charsRead = recv(connectionSocket, textBuffer, READ_BUFFER_SIZE, 0)) > 0)
   {
     inspectForSocketReadError(charsRead);
     for (int i = 0; i < charsRead; i++)
     {
       char curr = textBuffer[i];
-      if (curr != '\0')
+      if (curr != END_STRING_CHARACTER)
         fprintf(stdout, "%c", curr);
     }
-    memset(textBuffer, '\0', READ_BUFFER_SIZE);
+    memset(textBuffer, END_STRING_CHARACTER, READ_BUFFER_SIZE);
   }
-  fprintf(stdout, "\n");
+  fprintf(stdout, NEW_LINE_CHARACTER_STR);
 }

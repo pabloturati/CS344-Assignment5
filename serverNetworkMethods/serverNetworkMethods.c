@@ -13,7 +13,7 @@
 void setupServerAddressStruct(struct sockaddr_in *address, int portNumber)
 {
   // Clear out the address struct
-  memset((char *)address, '\0', sizeof(*address));
+  memset((char *)address, END_STRING_CHARACTER, sizeof(*address));
 
   // The address should be network capable
   address->sin_family = AF_INET;
@@ -30,9 +30,7 @@ int createServerSocketAndListenForConnections(int portNumber)
   // Create the socket that will listen for connections
   int listenSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (listenSocket < 0)
-  {
-    exitWithError("ENC_SERVER_ERROR opening socket", 1);
-  }
+    exitWithError(SERVER_OPEN_SOCKET_ERROR_MSG, DEFAULT_ERROR_EXIT_CODE);
 
   // Set up the address struct for the server socket
   setupServerAddressStruct(&serverAddress, portNumber);
@@ -41,9 +39,7 @@ int createServerSocketAndListenForConnections(int portNumber)
   if (bind(listenSocket,
            (struct sockaddr *)&serverAddress,
            sizeof(serverAddress)) < 0)
-  {
-    exitWithError("ENC_SERVER_ERROR on binding", 1);
-  }
+    exitWithError(SERVER_BINDING_ERROR_MSG, DEFAULT_ERROR_EXIT_CODE);
 
   // Start listening for connetions. Allow up to a max number of connections to queue up
   listen(listenSocket, MAX_NUM_OF_CONNECTIONS);
@@ -60,11 +56,9 @@ int acceptClientConnection(int listenSocket)
                                 (struct sockaddr *)&clientAddress,
                                 &sizeOfClientInfo);
   if (connectionSocket < 0)
-  {
-    fprintf(stderr, "ENC_SERVER_ERROR on accept\n");
-  }
+    fprintf(stderr, "%s", SERVER_ACCEPT_CONNECTION_ERROR_MSG);
 
-  printf("ENC_SERVER: Connected to client running at host %d port %d\n",
+  printf(SERVER_CONNECTION_CONFIRM_MSG,
          ntohs(clientAddress.sin_addr.s_addr),
          ntohs(clientAddress.sin_port));
   return connectionSocket;
