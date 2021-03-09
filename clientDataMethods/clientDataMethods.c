@@ -90,8 +90,11 @@ int validateTextFileAndKey(char *textFilename, char *keyFilename)
   return textfileLength;
 }
 
-void handleSendFilesToServer(int socketFD, char *file1, char *file2)
+void handleSendFilesToServer(int socketFD, char *file1, char *file2, int (*handshakeHandler)(int))
 {
+  // Send handshake
+  handshakeHandler(socketFD);
+
   // Send first file to server
   int textSendLength = sendFileToServer(file1, socketFD, 0);
 

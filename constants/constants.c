@@ -14,15 +14,16 @@ char *CLIENT_INVALID_CHARACTERS_MSG = "CLIENT: ERROR source file contains invali
 char *CLIENT_NO_HOST_ERROR_MSG = "CLIENT: ERROR, no such host\n";
 char *CLIENT_ERROR_OPENING_SOCKER_MSG = "CLIENT: ERROR opening socket\n";
 char *CLIENT_ERROR_CONNECTING_MSG = "CLIENT: ERROR connecting\n";
+char *CLIENT_WRONG_SERVER_CONNECTION = "CLIENT_ERROR: Connection has been refused by server due to client-server mismatch. Ending process.\n";
 
 // Server UI
 char *SERVER_ARG_COUNT_ERROR_MSG = "SERVER_ERROR: %s port\n";
 char *SERVER_KEY_LENGTH_ERROR_MSG = "ENC_SERVER_ERROR: Raw text file length does not match key\n";
-
 char *SERVER_OPEN_SOCKET_ERROR_MSG = "ENC_SERVER_ERROR opening socket\n";
 char *SERVER_BINDING_ERROR_MSG = "ENC_SERVER_ERROR on binding\n";
 char *SERVER_ACCEPT_CONNECTION_ERROR_MSG = "ENC_SERVER_ERROR on accept\n";
 char *SERVER_CONNECTION_CONFIRM_MSG = "ENC_SERVER: Connected to client running at host %d port %d\n";
+char *SERVER_WRONG_CLIENT_CONNECTION = "SERVER_ERROR: Connection has been refused. Trying to connect wrong client to server.\n";
 
 // Shared UI
 char *ERROR_OPENING_FILE_MSG = "Error opening file\n";

@@ -23,10 +23,8 @@ void setupClientAddressStruct(struct sockaddr_in *address, int portNumber, char 
   // Get the DNS entry for this host name
   struct hostent *hostInfo = gethostbyname(hostname);
   if (hostInfo == NULL)
-  {
-    fprintf(stderr, "%s", CLIENT_NO_HOST_ERROR_MSG);
-    exit(0);
-  }
+    exitWithError(CLIENT_NO_HOST_ERROR_MSG, 0);
+
   // Copy the first IP address from the DNS entry to sin_addr.s_addr
   memcpy((char *)&address->sin_addr.s_addr,
          hostInfo->h_addr_list[0],

@@ -29,6 +29,9 @@ int main(int argc, char *argv[])
     // Accept the connection request which creates a connection socket
     connectionSocket = acceptClientConnection(listenSocket);
 
+    // Filters unwanted connections
+    validateHandshake(connectionSocket, DEC_HANDSHAKE_MARKER_CHAR);
+
     // Encrypt file and send to client
     handleServerFileProcess(connectionSocket, writeDecryptedFile);
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int validateHandshake(int, char);
 void verifyKeyAndFileSizesMatch(int, int);
 int countTextLength(FILE *);
 void writeTempRawTextAndKeyFiles(int, FILE *, FILE *);

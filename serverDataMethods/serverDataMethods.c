@@ -11,6 +11,23 @@
 #include "../serverNetworkMethods/serverNetworkMethods.h"
 #include "serverDataMethods.h"
 
+int validateHandshake(int connectionSocket, char expectedHandshake)
+{
+  // Validate client with a handshake
+  char receiveHandshakeBuffer[2];
+  int charsRead = recv(connectionSocket, receiveHandshakeBuffer, 1, 0);
+  inspectForSocketReadError(charsRead);
+
+  // Terminate the string to send it back to the client to confirm
+  receiveHandshakeBuffer[1] = END_STRING_CHARACTER;
+  send(connectionSocket, receiveHandshakeBuffer, 2, 0);
+
+  //Terminate if handshake was not successful
+  if (expectedHandshake != receiveHandshakeBuffer[0])
+    exitWithError(SERVER_WRONG_CLIENT_CONNECTION, WRONG_CLIENT_SERVER_CONNECTION_CODE);
+  return 0;
+}
+
 void verifyKeyAndFileSizesMatch(int rawTextLength, int keyLength)
 {
   if (rawTextLength != keyLength)
