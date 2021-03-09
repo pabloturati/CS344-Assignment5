@@ -234,10 +234,10 @@ function main() {
   # Param triggers:
   # s - executable getting standard in from input1 testfile >run
   # n - generate key for a certain filename (arg = filename)
-  # k - kill both server processes
+  # k - kills both server processes
   # q - do a test run with a testfile. Arg is number 1 thru 5 for each plaintext file
   # f - to do a full clean of the project output and compile files
-  # u - tests all plaintext files in path testfiles/plaintext*
+  # u - tests all plaintext files in path plaintext*
   # z - runs grading script
   while getopts "sn:kq:1fzu" flag; do
     case $flag in
