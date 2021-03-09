@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/wait.h>
 #include "sharedMethods/sharedMethods.h"
 #include "constants/constants.h"
 #include "encryptionMethods/encryptionMethods.h"
