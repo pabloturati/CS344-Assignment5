@@ -29,13 +29,25 @@ int main(int argc, char *argv[])
     // Accept the connection request which creates a connection socket
     connectionSocket = acceptClientConnection(listenSocket);
 
-    // Filters unwanted connections
-    validateHandshake(connectionSocket, ENC_HANDSHAKE_MARKER_CHAR);
+    pid_t spawnPid = fork();
+    int childProcessStatus;
 
-    // Encrypt file and send to client
-    handleServerFileProcess(connectionSocket, writeEncryptedFile);
-
-    close(connectionSocket);
+    switch (spawnPid)
+    {
+    case -1: // In case of Fork error
+      perror(FORK_ERROR_MSG);
+      return DEFAULT_ERROR_EXIT_CODE;
+    case 0: // Child process
+      // Filters unwanted connections
+      validateHandshake(connectionSocket, ENC_HANDSHAKE_MARKER_CHAR);
+      // Encrypt file and send to client
+      handleServerFileProcess(connectionSocket, writeEncryptedFile);
+      return 0;
+    default:
+      // Else wait for child to finish.
+      waitpid(spawnPid, &childProcessStatus, 0);
+      close(connectionSocket);
+    }
   }
   // Close the listening socket
   close(listenSocket);
