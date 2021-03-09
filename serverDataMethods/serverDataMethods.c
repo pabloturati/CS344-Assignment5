@@ -24,7 +24,10 @@ int validateHandshake(int connectionSocket, char expectedHandshake)
 
   //Terminate if handshake was not successful
   if (expectedHandshake != receiveHandshakeBuffer[0])
-    exitWithError(SERVER_WRONG_CLIENT_CONNECTION, WRONG_CLIENT_SERVER_CONNECTION_CODE);
+  {
+    fprintf(stderr, "%s", SERVER_WRONG_CLIENT_CONNECTION);
+    return WRONG_CLIENT_SERVER_CONNECTION_CODE;
+  }
   return 0;
 }
 

@@ -23,7 +23,7 @@ char *SERVER_OPEN_SOCKET_ERROR_MSG = "ENC_SERVER_ERROR opening socket\n";
 char *SERVER_BINDING_ERROR_MSG = "ENC_SERVER_ERROR on binding\n";
 char *SERVER_ACCEPT_CONNECTION_ERROR_MSG = "ENC_SERVER_ERROR on accept\n";
 char *SERVER_CONNECTION_CONFIRM_MSG = "ENC_SERVER: Connected to client running at host %d port %d\n";
-char *SERVER_WRONG_CLIENT_CONNECTION = "SERVER_ERROR: Connection has been refused. Trying to connect wrong client to server.\n";
+char *SERVER_WRONG_CLIENT_CONNECTION = "SERVER_ERROR: Connection is being refused. Trying to connect wrong client to server.\n";
 
 // Shared UI
 char *ERROR_OPENING_FILE_MSG = "Error opening file\n";
