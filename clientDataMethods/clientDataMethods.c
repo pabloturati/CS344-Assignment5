@@ -68,12 +68,12 @@ int validateCharacters(char *filename)
     // Calculates the length of line (regardless of it containing new line)
     size = strcspn(line, NEW_LINE_CHARACTER_STR);
 
-    for (int i; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
       if (!isValidCharacter(line[i]))
       {
         freeMemoryAndCloseFile(line, fp);
-        exitWithError(CLIENT_INVALID_CHARACTERS_MSG, 1);
+        return -1;
       }
     }
     freeMemoryAndCloseFile(line, fp);
@@ -84,6 +84,8 @@ int validateCharacters(char *filename)
 int validateTextFileAndKey(char *textFilename, char *keyFilename)
 {
   int textfileLength = validateCharacters(textFilename);
+  if (textfileLength < 0)
+    exitWithError(CLIENT_INVALID_CHARACTERS_MSG, 1);
   int keyFileLength = validateCharacters(keyFilename);
   if (textfileLength > keyFileLength)
     exitWithDinamicallyGeneratedMessage(KEY_FILE_SIZE_ERROR_MSG, keyFilename);

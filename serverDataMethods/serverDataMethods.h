@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 int validateHandshake(int, char);
-void verifyKeyAndFileSizesMatch(int, int);
+int verifyKeyAndFileSizesMatch(int, int);
 int countTextLength(FILE *);
 void writeTempRawTextAndKeyFiles(int, FILE *, FILE *);
 void closeAndDeleteFile(FILE *, char *);

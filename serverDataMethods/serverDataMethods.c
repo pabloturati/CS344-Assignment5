@@ -31,10 +31,14 @@ int validateHandshake(int connectionSocket, char expectedHandshake)
   return 0;
 }
 
-void verifyKeyAndFileSizesMatch(int rawTextLength, int keyLength)
+int verifyKeyAndFileSizesMatch(int rawTextLength, int keyLength)
 {
   if (rawTextLength != keyLength)
-    exitWithError(SERVER_KEY_LENGTH_ERROR_MSG, DEFAULT_ERROR_EXIT_CODE);
+  {
+    fprintf(stderr, "%s", SERVER_KEY_LENGTH_ERROR_MSG);
+    return 1;
+  }
+  return 0;
 }
 
 int countTextLength(FILE *fp)
